@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Web Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2193b0, #6dd5ed);
+            color: white;
+        }
+
+        .weather-app {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 30px;
+            border-radius: 15px;
+            width: 320px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #00c6ff;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .temp {
+            font-size: 40px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="weather-app">
+    <h1>Weather App</h1>
+
+    <input type="text" id="city" placeholder="Enter city name">
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const apiKey = "f0dbafe0ab57f3b128fb94686b2cb417"; 
+
+    function getWeather() {
+        const city = document.getElementById("city").value;
+        if (city === "") {
+            alert("Please enter a city name");
+            return;
+        }
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.cod !== 200) {
+                    document.getElementById("result").innerHTML = "City not found!";
+                    return;
+                }
+
+                document.getElementById("result").innerHTML = `
+                    <h2>${data.name}</h2>
+                    <div class="temp">${Math.round(data.main.temp)}°C</div>
+                    <p>${data.weather[0].description}</p>
+                    <p>Humidity: ${data.main.humidity}%</p>
+                    <p>Wind Speed: ${data.wind.speed} m/s</p>
+                `;
+            })
+            .catch(() => {
+                document.getElementById("result").innerHTML = "Error fetching weather data";
+            });
+    }
+</script>
+
+</body>
+</html>
